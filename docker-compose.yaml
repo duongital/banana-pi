@@ -23,8 +23,6 @@ services:
       CLAUDE_SESSIONS_DIR: /agents/claude
       # Inline images referenced in sessions (e.g. /tmp clipboard PNGs).
       # Host /tmp is mounted at /host/tmp, so remap on-disk lookups with a prefix.
-      # /chat: LiteLLM gateway key (mounted below).
-      LITELLM_KEY_FILE: /run/secrets/litellm.key
       CHAT_DATA_DIR: /data/chat
       SAVED_DATA_DIR: /data/saved
       AGENTS_DATA_DIR: /data/agents
@@ -46,8 +44,6 @@ services:
       - ${HOME}/.agents/skills:/skills/agents:ro
       # Host /tmp (clipboard images, etc.) mounted read-only for inline preview.
       - /tmp:/host/tmp:ro
-      # LiteLLM API key for /chat.
-      - ${HOME}/.pi/agent/.litellm.key:/run/secrets/litellm.key:ro
       # Persisted /chat sessions.
       - ${HOME}/.local/share/banana-pi-chat:/data/chat
       # Persisted agent definitions (/agents).

@@ -34,7 +34,7 @@ export const openapi = {
       delete: { tags: ['Saved'], summary: 'Remove a saved entry', parameters: [agent, q('id', 'Session id', true), q('entryId', 'Entry id', true)], responses: ok() },
     },
     '/api/skills': { get: { tags: ['Misc'], summary: 'List discovered skills (name, description, source, path, body)', responses: ok() } },
-    '/api/models': { get: { tags: ['Chat'], summary: 'Model details (LiteLLM)', responses: ok() } },
+    '/api/models': { get: { tags: ['Chat'], summary: 'Model details (OpenAI-compatible gateway)', responses: ok() } },
     '/api/chat/models': { get: { tags: ['Chat'], summary: 'Chat model list', responses: ok('[{ id, owned_by, mode, created, max_input_tokens, max_output_tokens }]') } },
     '/api/chat': { post: { tags: ['Chat'], summary: 'Streaming chat completion (SSE passthrough)', requestBody: body('Model and messages', { model: 'gpt-4o', messages: [{ role: 'user', content: 'hi' }] }), responses: { 200: { description: 'text/event-stream' } } } },
     '/api/chat/agent': { post: { tags: ['Chat'], summary: 'Agent loop chat (system prompt + tool calls, SSE events: text, thinking, message, error, done)', requestBody: body('Agent definition id and OpenAI-format messages', { agentId: '<id from /api/agent-defs>', messages: [{ role: 'user', content: 'hi' }] }), responses: { 200: { description: 'text/event-stream' } } } },

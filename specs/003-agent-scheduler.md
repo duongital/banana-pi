@@ -91,7 +91,7 @@ flowchart LR
 1. Extract the core into `runAgent({ def, messages, apiKey, signal, onEvent })` that emits the same events (`text`, `thinking`, `message`, `error`, `done`).
 2. `agentChat` becomes a thin SSE wrapper around it (behaviour unchanged for `/chat`).
 3. `runJob` calls `runAgent` with `messages = [{ role:'user', content: job.prompt }]`, collects `message` events into `JobRun.messages`, takes the last assistant text as `output`, and sums `usage`.
-4. Gateway key: `apiKey()` from `src/chat.ts` (`LITELLM_API_KEY` or `LITELLM_KEY_FILE`); missing key → run `error`.
+4. Gateway key: `apiKey()` from `src/chat.ts` (`LITELLM_API_KEY`); missing key → run `error`.
 5. Timeout via a timer that aborts the run's `AbortController` → status `timeout`; cancel → `cancelled`. `POST .../run` returns immediately (202) while the run continues in the background.
 
 ### Run lifecycle

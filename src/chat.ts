@@ -5,11 +5,9 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 
 const BASE_URL = process.env.LITELLM_BASE_URL || 'https://aigateway.pec.hrs.cc/v1';
-const KEY_FILE = process.env.LITELLM_KEY_FILE || join(homedir(), '.pi', 'agent', '.litellm.key');
 
 export function apiKey() {
-  if (process.env.LITELLM_API_KEY) return process.env.LITELLM_API_KEY;
-  try { return readFileSync(KEY_FILE, 'utf8').trim(); } catch { return ''; }
+  return process.env.LITELLM_API_KEY?.trim() || '';
 }
 
 const json = (res, data, status = 200) => {
@@ -42,7 +40,8 @@ export async function modelDetails(res) {
       owned_by: m.owned_by ?? null,
       mode: m.mode ?? null,
       created: m.created ?? null,
-      max_input_tokens: m.max_input_tokens ?? null,
+      // DeepSeek/OpenAI-compatible gateways expose these under different names.
+      max_input_tokens: m.max_input_tokens ?? m.context_window ?? null,
       max_output_tokens: m.max_output_tokens ?? null,
     })).sort((a: any, b: any) => a.id.localeCompare(b.id));
     json(res, list);

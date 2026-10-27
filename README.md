@@ -65,6 +65,8 @@ disabled.
 | `CLAUDE_SESSIONS_DIR` | `~/.claude/projects`      | Claude Code projects root               |
 | `IMAGE_ROOTS`      | `/tmp`                      | Dirs images may be served from (comma-separated) |
 | `IMAGE_MOUNT_PREFIX`| (empty)                    | On-disk prefix for image lookups (Docker remap) |
+| `LITELLM_BASE_URL` | `https://aigateway.pec.hrs.cc/v1` | OpenAI-compatible API base URL (e.g. `https://api.deepseek.com/v1`) |
+| `LITELLM_API_KEY`  | (empty)                     | API key for the gateway above           |
 
 ## Inline images
 
