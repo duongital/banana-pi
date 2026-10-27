@@ -51,7 +51,16 @@ const IMAGE_MIME = {
 let assets: Assets;
 const DEV = process.env.NODE_ENV === 'development';
 const reloadClients = new Set<any>();
-const RELOAD_JS = `<script>new EventSource('/__reload').onmessage=function(){location.reload()}</script>`;
+// Browsers allow only ~6 HTTP/1.1 connections per origin; one SSE per tab per stream starves navigation/fetches.
+// So only one "leader" tab (Web Lock) opens the EventSources and relays messages to the other tabs via BroadcastChannel.
+const SHARED_SSE_JS = (dev: boolean) => `<script>(function(){var bc=new BroadcastChannel('banana-sse'),dev=${dev};
+function onMsg(k,d){if(k==='reload'){location.reload()}else if(k==='sched'){window.__schedNotify&&window.__schedNotify(d)}}
+bc.onmessage=function(e){onMsg(e.data.k,e.data.d)};
+function lead(){var l=[];
+if(dev){var r=new EventSource('/__reload');r.onmessage=function(){bc.postMessage({k:'reload'});onMsg('reload')};l.push(r)}
+if(window.__schedNotify){var s=new EventSource('/api/scheduler/events');s.onmessage=function(m){bc.postMessage({k:'sched',d:m.data});onMsg('sched',m.data)};l.push(s)}
+addEventListener('pagehide',function(){l.forEach(function(x){x.close()})})}
+if(navigator.locks){navigator.locks.request('banana-sse-leader',function(){lead();return new Promise(function(){})})}else lead()})()</script>`;
 
 /** Dev only: rebuild the client bundle on src/client changes and tell open tabs to reload. */
 function watchClient() {
@@ -303,7 +312,7 @@ window.addEventListener('storage',function(e){if(e.key==='banana-pi-theme'&&e.ne
 paint()})()</script>`;
 // Chrome desktop notifications for finished scheduler runs (any open tab; Notification `tag` dedupes across tabs).
 const NOTIFY_JS = `<script>(function(){if(!('Notification' in window)||Notification.permission!=='granted')return;
-var es=new EventSource('/api/scheduler/events');es.onmessage=function(m){try{var e=JSON.parse(m.data);
+window.__schedNotify=function(d){try{var e=JSON.parse(d);
 if(e.type!=='run'||!e.notify||e.run.status==='running'||e.run.status==='skipped')return;
 var r=e.run,ok=r.status==='success',t=(ok?'✅ ':'❌ ')+r.jobName+' — '+r.status;
 var b=(r.error||r.output||'').slice(0,200);
@@ -313,7 +322,7 @@ const NAV_LINKS: [string, string][] = [['/sessions', 'Sessions'], ['/sessions-sa
 function withNav(html: string, path: string) {
   const nav = '<nav id="topnav"><a href="/sessions" class="logo" title="Banana Pi" style="font-size:18px;line-height:1;padding:4px 6px;text-decoration:none">🍌</a>' + NAV_LINKS.map(([h, l]) =>
     `<a href="${h}"${path === h || path.startsWith(h + '/') ? ' class="on"' : ''}>${l}</a>`).join('') +
-    '<select id="theme-select" class="select select-xs w-auto" title="Select theme"></select></nav>' + THEME_JS + NOTIFY_JS;
+    '<select id="theme-select" class="select select-xs w-auto" title="Select theme"></select></nav>' + THEME_JS + NOTIFY_JS + SHARED_SSE_JS(DEV);
   return html.replace('</head>', THEME_HEAD + NAV_CSS + '</head>').replace(/<body[^>]*>/, (m) => m + nav);
 }
 
@@ -328,7 +337,7 @@ function sendAsset(res, pathname) {
 
 function sendHtml(res, html, status = 200, path = '') {
   res.writeHead(status, { 'Content-Type': 'text/html; charset=utf-8' });
-  res.end(withNav(html, path).replace('</body>', (DEV ? RELOAD_JS : '') + '</body>'));
+  res.end(withNav(html, path));
 }
 
 /** Serve an image file from an allow-listed directory, with path checks. */
