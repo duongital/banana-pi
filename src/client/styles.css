@@ -1,0 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap");
+@import "tailwindcss";
+@plugin "daisyui" { themes: all; }
+@source "./";
+
+@theme {
+  --font-sans: "Google Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Base typography for rendered markdown (Tailwind preflight resets these). */
+.md-content h1,.md-content h2,.md-content h3,.md-content h4{font-weight:700;margin:1rem 0 .5rem}
+.md-content h1{font-size:1.5rem}.md-content h2{font-size:1.3rem}.md-content h3{font-size:1.1rem}
+.md-content p,.md-content ul,.md-content ol,.md-content pre,.md-content table,.md-content blockquote{margin:0 0 .6rem}
+.md-content ul{list-style:disc;padding-left:1.5rem}.md-content ol{list-style:decimal;padding-left:1.5rem}
+.md-content a{color:var(--color-primary);text-decoration:underline}
+.md-content code{font-family:var(--font-mono,ui-monospace,monospace);font-size:.85em;background:var(--color-base-300);padding:.1em .3em;border-radius:var(--radius-field)}
+.md-content pre{background:var(--color-base-300);padding:.6rem;border-radius:var(--radius-box);overflow-x:auto}
+.md-content pre code{background:transparent;padding:0}
+.md-content blockquote{border-left:3px solid var(--color-base-content);padding-left:.75rem;opacity:.8}
+.md-content th,.md-content td{border:1px solid var(--color-base-300);padding:.25rem .5rem}

@@ -1,0 +1,33 @@
+{
+  "name": "banana-pi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only web viewer for AI agent session files. Starts with pi; extensible to claude, opencode, and more via agent adapters.",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "bun src/index.ts",
+    "dev": "NODE_ENV=development bun --watch src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "bun": ">=1.4.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "^1.4.0",
+    "bun-plugin-tailwind": "^0.1.2",
+    "croner": "^11.0.0",
+    "daisyui": "^5.7.50",
+    "marked": "^18.1.1",
+    "mermaid": "^12.2.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwindcss": "^4.3.3"
+  }
+}

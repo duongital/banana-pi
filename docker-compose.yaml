@@ -1,0 +1,58 @@
+services:
+  banana-pi:
+    build: .
+    image: banana-pi:latest
+    container_name: banana-pi
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      # Bind to localhost only — this is a personal, read-only viewer.
+      - "127.0.0.1:4241:4241"
+    labels:
+      dev.dozzle.url: http://localhost:4241
+    environment:
+      PORT: 4241
+      HOST: 0.0.0.0
+      # Where each agent's sessions live inside the container.
+      PI_SESSIONS_DIR: /agents/pi
+      PIR_SESSIONS_DIR: /agents/pir
+      # opencode stores sessions in a SQLite db at <dir>/opencode.db.
+      OPENCODE_SESSIONS_DIR: /agents/opencode
+      # Claude Code stores JSONL sessions under <dir>/<encoded-cwd>/<uuid>.jsonl.
+      CLAUDE_SESSIONS_DIR: /agents/claude
+      # Inline images referenced in sessions (e.g. /tmp clipboard PNGs).
+      # Host /tmp is mounted at /host/tmp, so remap on-disk lookups with a prefix.
+      # /chat: LiteLLM gateway key (mounted below).
+      LITELLM_KEY_FILE: /run/secrets/litellm.key
+      CHAT_DATA_DIR: /data/chat
+      SAVED_DATA_DIR: /data/saved
+      AGENTS_DATA_DIR: /data/agents
+      SCHEDULER_DATA_DIR: /data/scheduler
+      IMAGE_ROOTS: /tmp
+      IMAGE_MOUNT_PREFIX: /host
+    volumes:
+      # Mounted read-write so rename/delete work. Drop the trailing flag or
+      # append ':ro' if you want a strictly read-only viewer instead.
+      - ${HOME}/.pi/agent/sessions:/agents/pi
+      # pir sessions (pi-like agent).
+      - ${HOME}/.pir/sessions:/agents/pir
+      # opencode sessions (read-only SQLite db). The viewer never writes to it.
+      - ${HOME}/.local/share/opencode:/agents/opencode:ro
+      # Claude Code sessions (read-only JSONL). The viewer never writes to them.
+      - ${HOME}/.claude/projects:/agents/claude:ro
+      # Global skills (read-only) for the Skills list on the Agents page.
+      - ${HOME}/.pi/agent/skills:/skills/pi:ro
+      - ${HOME}/.agents/skills:/skills/agents:ro
+      # Host /tmp (clipboard images, etc.) mounted read-only for inline preview.
+      - /tmp:/host/tmp:ro
+      # LiteLLM API key for /chat.
+      - ${HOME}/.pi/agent/.litellm.key:/run/secrets/litellm.key:ro
+      # Persisted /chat sessions.
+      - ${HOME}/.local/share/banana-pi-chat:/data/chat
+      # Persisted agent definitions (/agents).
+      - ${HOME}/.local/share/banana-pi-agents:/data/agents
+      # Persisted scheduler jobs + run history (/scheduler).
+      - ${HOME}/.local/share/banana-pi-scheduler:/data/scheduler
+      # Persisted saved-sessions list (saved.json).
+      - ${HOME}/.local/share/banana-pi-saved:/data/saved

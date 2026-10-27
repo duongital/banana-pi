@@ -1,0 +1,23 @@
+body{max-width:1200px}
+#root{padding:24px 32px 24px 24px}
+#root input,#root textarea,#root select{border:1px solid var(--color-border,#8886);border-radius:6px;background:transparent;padding:6px 8px;width:100%;box-sizing:border-box;color:inherit}
+#root input:focus,#root textarea:focus,#root select:focus{outline:none;border-color:var(--color-primary,#8b5cf6)}
+#root select option{background:var(--color-base-100,#222)}
+#root textarea{min-height:200px;font-family:var(--font-mono,ui-monospace,monospace);font-size:13px;resize:vertical}
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card-a{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px;border:1px solid var(--color-border,#8883);border-radius:6px;cursor:pointer;background:none;color:inherit;font-size:13px}
+.card-a:hover{background:#8881;border-color:var(--color-primary,#8b5cf6)}
+.sp{display:block;font-size:11px;opacity:.55;font-weight:400;margin-top:2px;word-break:break-all}
+.f{max-height:90vh;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.f label.l{display:block;font-size:12px;opacity:.7;margin-bottom:4px}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+.tools label{display:flex;gap:6px;align-items:center;cursor:pointer;font-size:13px;font-family:var(--font-mono,ui-monospace,monospace)}
+#root .tools input[type=checkbox]{width:auto;padding:0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hint{opacity:.6}.e{color:var(--color-error)}.w{color:var(--color-warning);font-size:12px}
+.link{cursor:pointer;text-decoration:underline;opacity:.7;font-size:12px;background:none;border:0;color:inherit}
+.tbl{border-collapse:collapse;width:100%}
+.tbl th,.tbl td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--color-border,#8883);font-family:var(--font-mono,ui-monospace,monospace);font-size:13px}
+.tbl td.n{text-align:right}
+.sbody{white-space:pre-wrap;word-break:break-word;font-family:var(--font-mono,ui-monospace,monospace);font-size:12px;background:#8881;padding:10px;border-radius:6px;margin:0;max-height:55vh;overflow:auto}
+.tbl tr.clk{cursor:pointer}.tbl tr.clk:hover{background:#8881}
